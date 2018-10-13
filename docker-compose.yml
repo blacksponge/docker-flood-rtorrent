@@ -17,6 +17,7 @@ services:
       - FLOOD_PASSWORD=changeme
     links:
       - rtorrent
+  
   rtorrent:
     build:
       context: .
@@ -32,8 +33,8 @@ services:
       - ./watch/load:/home/rtorrent/watch/load
 
 networks:
-  flood-net:
+  default:
     ipam:
       driver: default
       config:
-        - subnet: 10.68.0.0/30
+        - subnet: 10.68.0.0/29
