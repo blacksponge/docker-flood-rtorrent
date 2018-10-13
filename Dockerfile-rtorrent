@@ -52,11 +52,11 @@ USER root
 RUN make install
 
 # Cleaning build files
-USER rtorrent
 WORKDIR /home/rtorrent
 RUN rm -Rf /rtorrent-compile
 
 # Creating run time directories
+USER rtorrent
 RUN mkdir -p watch/{load,start} .session downloads logs
 
 # Copying config and run script
