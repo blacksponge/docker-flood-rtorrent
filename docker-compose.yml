@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  flood:
+    build:
+      context: .
+      dockerfile: Dockerfile-flood
+    image: flood
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./flood:/flood/src
+    environment:
+      - RTORRENT_SCGI_HOST=rtorrent
+    links:
+      - rtorrent
+  rtorrent:
+    build:
+      context: .
+      dockerfile: Dockerfile-rtorrent
+      args:
+        - UID=1000
+    image: rtorrent
+    volumes:
+      - ./downloads:/home/rtorrent/downloads
+      - ./session:/home/rtorrent/.session
+      - ./logs:/home/rtorrent/logs
+      - ./watch/start:/home/rtorrent/watch/start
+      - ./watch/load:/home/rtorrent/watch/load
+    

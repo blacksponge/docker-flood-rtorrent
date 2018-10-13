@@ -1,0 +1,66 @@
+# Use ubuntu as base image for installing rtorrent
+FROM ubuntu
+
+# Here we are going to recompile rtorrent from source 
+# because of an outdated version in the packages repository (0.9.6)
+# and some cool features (like the daemon mode) that are only available 
+# in the last version (0.9.7)
+
+# UID of user for build and run
+ARG UID=1000
+
+# Installing build dependencies
+RUN apt-get update
+RUN apt-get install -y wget unzip
+RUN apt-get install -y pkg-config build-essential automake checkinstall
+RUN apt-get install -y libtool libncursesw5-dev libncurses5-dev libxmlrpc-c++8-dev libcurl4-openssl-dev
+RUN apt-get install -y zlib1g-dev libcrypto++-dev libssl-dev
+
+# Creating the user and working dir
+RUN useradd -m -s /bin/bash -u ${UID} -U rtorrent
+RUN mkdir /rtorrent-compile
+RUN chown rtorrent:rtorrent /rtorrent-compile
+
+# Fetching sources for rtorrent and libtorrent
+USER rtorrent
+WORKDIR /rtorrent-compile
+RUN wget https://github.com/rakshasa/rtorrent/archive/master.zip -O rtorrent.zip
+RUN wget https://github.com/rakshasa/libtorrent/archive/master.zip -O libtorrent.zip
+RUN unzip libtorrent.zip
+RUN unzip rtorrent.zip
+
+# Compiling libtorrent
+WORKDIR /rtorrent-compile/libtorrent-master
+RUN ./autogen.sh
+RUN ./configure
+RUN make
+
+# Installing libtorrent and rebuilding ld cache
+USER root
+RUN make install
+RUN ldconfig
+
+# Compiling rtorrent
+USER rtorrent
+WORKDIR /rtorrent-compile/rtorrent-master
+RUN ./autogen.sh
+RUN ./configure --with-xmlrpc-c
+RUN make
+
+# Installing rtorrent
+USER root
+RUN make install
+
+# Cleaning build files
+USER rtorrent
+WORKDIR /home/rtorrent
+RUN rm -Rf /rtorrent-compile
+
+# Creating run time directories
+RUN mkdir -p watch/{load,start} .session downloads logs
+
+# Copying config and run script
+COPY ./rtorrent-config ./.rtorrent.rc
+COPY ./run-rtorrent.sh ./run.sh
+
+CMD ./run.sh

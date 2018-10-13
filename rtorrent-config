@@ -1,0 +1,31 @@
+method.insert = cfg.watch,   private|const|string, (cat,"watch/")
+method.insert = cfg.logfile, private|const|string, (cat,"logs/rtorrent-",(system.time),".log")
+
+method.insert = d.get_finished_dir,simple,\
+        "if=(d.custom1),\
+        (cat, downloads/, (d.custom1), /),\
+        (cat, downloads/unsorted/)"
+
+session.path.set = .session
+
+directory.default.set = downloads/unsorted
+
+port_range = 6890-6999
+port_random = yes
+
+check_hash = yes
+
+scgi_port = 0.0.0.0:5000
+
+pieces.memory.max.set = 6442450944000
+network.xmlrpc.size_limit.set = 25M
+
+schedule2 = watch_start, 10, 10, ((load.start, (cat, (cfg.watch), "start/*.torrent")))
+schedule2 = watch_load, 11, 10, ((load.normal, (cat, (cfg.watch), "load/*.torrent")))
+
+log.open_file = "log", (cfg.logfile)
+log.add_output = "info", "log"
+
+method.set_key = event.download.finished,move_complete,"d.directory.set=$d.get_finished_dir=;execute=mkdir,-p,$d.get_finished_dir=;execute=mv,-u,$d.base_path=,$d.get_finished_dir="
+
+system.daemon.set = true
