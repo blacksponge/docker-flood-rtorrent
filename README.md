@@ -1,6 +1,7 @@
 # Flood + rtorrent docker images
 
 ## Installation notes
+First clone the repo recursivly using `git clone git clone --recursive https://github.com/blacksponge/docker-flood-rtorrent`.
 
 In order to deploy the two images run `docker-compose up`. The defaults run rtorrent with the user having an UID of 1000, to change it to your local user if it differs, export the UID before running `docker-compose` :
 
