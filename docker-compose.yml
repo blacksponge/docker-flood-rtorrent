@@ -15,8 +15,8 @@ services:
     environment:
       - RTORRENT_SCGI_HOST=rtorrent
       - RTORRENT_SCGI_PORT=5000
-      - FLOOD_USER=admin
-      - FLOOD_PASSWORD=changeme
+      - FLOOD_USER
+      - FLOOD_PASSWORD
       - NODE_ENV
     links:
       - rtorrent
