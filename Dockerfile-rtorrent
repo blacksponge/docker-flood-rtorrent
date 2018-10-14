@@ -54,10 +54,12 @@ RUN make install
 # Cleaning build files
 WORKDIR /home/rtorrent
 RUN rm -Rf /rtorrent-compile
+RUN mkdir /downloads
+RUN chown rtorrent:rtorrent /downloads
 
 # Creating run time directories
 USER rtorrent
-RUN mkdir -p watch/{load,start} .session downloads logs
+RUN mkdir -p watch/{load,start} .session logs
 
 # Copying config and run script
 COPY ./rtorrent-config ./.rtorrent.rc

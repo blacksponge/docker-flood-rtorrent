@@ -3,12 +3,12 @@ method.insert = cfg.logfile, private|const|string, (cat,"logs/rtorrent-",(system
 
 method.insert = d.get_finished_dir,simple,\
         "if=(d.custom1),\
-        (cat, downloads/, (d.custom1), /),\
-        (cat, downloads/unsorted/)"
+        (cat, /downloads/, (d.custom1), /),\
+        (cat, /downloads/unsorted/)"
 
 session.path.set = .session
 
-directory.default.set = downloads/unsorted
+directory.default.set = /downloads/unsorted
 
 port_range = 6890-6999
 port_random = yes

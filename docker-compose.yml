@@ -10,6 +10,7 @@ services:
       - '3000:3000'
     volumes:
       - ./flood:/flood/src
+      - ./downloads:/downloads
     environment:
       - RTORRENT_SCGI_HOST=rtorrent
       - RTORRENT_SCGI_PORT=5000
@@ -26,7 +27,7 @@ services:
         - UID
     image: rtorrent
     volumes:
-      - ./downloads:/home/rtorrent/downloads
+      - ./downloads:/downloads
       - ./session:/home/rtorrent/.session
       - ./logs:/home/rtorrent/logs
       - ./watch/start:/home/rtorrent/watch/start
